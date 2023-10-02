@@ -15,4 +15,12 @@ public class UserInterface {
                         + "\nOpcion: "
         );
     }
+
+    public static void getDocumentName() {
+        System.out.print("Introduzca el nombre del documento: ");
+    }
+
+    public static void getStrText() {
+        System.out.print("Introduzca el texto a codificar: ");
+    }
 }

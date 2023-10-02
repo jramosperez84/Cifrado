@@ -7,8 +7,6 @@ import javax.crypto.SecretKey;
 import java.security.NoSuchAlgorithmException;
 
 public class GenerateSecretKey {
-
-
     public static SecretKey secretKey() {
         KeyGenerator keyGenerator = null;
         try {

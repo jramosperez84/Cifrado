@@ -3,9 +3,11 @@ package controller;
 import aux.Constants;
 import model.Decrypt;
 import model.Encrypt;
+import view.ErrorInterface;
 import view.UserInterface;
 
 import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import java.util.Scanner;
 
 public class App {
@@ -29,37 +31,40 @@ public class App {
 
         switch (menuOption) {
             case Constants.ENCRYPT -> {
-                System.out.print("Introduzca el nombre del documento: ");
+                UserInterface.getDocumentName();
                 filePath = dataEntry.nextLine();
-                System.out.print("Introduzca el texto a codificar: ");
+                UserInterface.getStrText();
                 messageText = dataEntry.nextLine();
-                encryptMessage(filePath,messageText);
+                encryptMessage(filePath, messageText);
                 applicationMenu();
             }
             case Constants.DECRYPT -> {
-                System.out.print("Introduzca el nombre del documento: ");
+                UserInterface.getDocumentName();
                 filePath = dataEntry.nextLine();
                 outputMessage = decryptMessage(filePath);
                 System.out.println(outputMessage);
                 applicationMenu();
             }
             case Constants.EXIT -> System.exit(0);
-            default -> System.out.println("Introduzca una opción correcta");
-
+            default -> ErrorInterface.chooseValidOption();
         }
     }
 
     private void encryptMessage(String filePath, String messageText) {
         Encrypt encrypt = Encrypt.encrypt();
         fileManagement = FileManagement.fileManagement();
+        byte[] desKey = secretKey.getEncoded();
         byte[] encryptedMessage = encrypt.encryptMessage(messageText, secretKey);
         fileManagement.writeFile(filePath, encryptedMessage);
+        fileManagement.writeSecretKey(Constants.PREFIX.concat(filePath), desKey);
     }
 
     private String decryptMessage(String filePath) {
         Decrypt decrypt = Decrypt.decrypt();
-        byte[] decryptedMessage = fileManagement.readFile(filePath);
-        return decrypt.decryptMessage(decryptedMessage, secretKey);
+        byte[] SecretKey = fileManagement.readFile(Constants.PREFIX.concat(filePath));
+        byte[] encryptedMessage = fileManagement.readFile(filePath);
+        SecretKey originalKey = new SecretKeySpec(SecretKey, Constants.ENCRYPT_SYSTEM);
+        return decrypt.decryptMessage(encryptedMessage, originalKey);
     }
 }
 

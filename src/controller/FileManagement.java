@@ -1,25 +1,35 @@
 package controller;
 
+import view.ErrorInterface;
+
 import java.io.*;
 
 public class FileManagement {
+
     public static FileManagement fileManagement() {
         return new FileManagement();
     }
 
     public void writeFile(String filePath, byte[] encryptedMessage) {
+        saveData(filePath, encryptedMessage);
+    }
+
+    public void writeSecretKey(String filePath, byte[] secretKey) {
+        saveData(filePath, secretKey);
+    }
+
+    private void saveData(String filePath, byte[] dataArray) {
         File file = new File(filePath);
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         try {
-
             OutputStream outputStream = new FileOutputStream(file);
-            byteArrayOutputStream.write(encryptedMessage);
+            byteArrayOutputStream.write(dataArray);
             byteArrayOutputStream.writeTo(outputStream);
 
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            ErrorInterface.fileNotFoundException(e);
         } catch (IOException e) {
-            System.out.println(" ");
+            ErrorInterface.ioException(e);
         }
     }
 
@@ -31,9 +41,9 @@ public class FileManagement {
             contentFile = fileInputStream.readNBytes((int)file.length());
 
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            ErrorInterface.fileNotFoundException(e);
         } catch (IOException e) {
-            System.out.println("ss");
+            ErrorInterface.ioException(e);
         }
         return contentFile;
     }

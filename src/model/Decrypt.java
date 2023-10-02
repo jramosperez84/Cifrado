@@ -1,6 +1,7 @@
 package model;
 
 import aux.Constants;
+import view.ErrorInterface;
 
 import javax.crypto.*;
 import java.security.InvalidKeyException;
@@ -20,15 +21,15 @@ public class Decrypt {
             desCipher.init(Cipher.DECRYPT_MODE, secretKey);
             decryptedMessage = desCipher.doFinal(encryptedMessage);
         } catch (NoSuchAlgorithmException e) {
-            System.err.println("NoSuchAlgorithmException".concat(e.getMessage()));
+            ErrorInterface.noSuchAlgorithmException(e);
         } catch (NoSuchPaddingException e) {
-            System.err.println("NoSuchPaddingException".concat(e.getMessage()));
+            ErrorInterface.noSuchPaddingException(e);
         } catch (IllegalBlockSizeException e) {
-            //System.err.println("IllegalBlockSizeException".concat(e.getMessage()));
-        } catch (BadPaddingException e) {
-            System.err.println("BadPaddingException".concat(e.getMessage()));
+            ErrorInterface.illegalBlockSizeException(e);
         } catch (InvalidKeyException e) {
-            System.err.println("InvalidKeyException".concat(e.getMessage()));
+            ErrorInterface.invalidKeyException(e);
+        } catch (BadPaddingException e) {
+            ErrorInterface.badPaddingException(e);
         }
         return new String(decryptedMessage);
     }
